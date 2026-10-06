@@ -1,0 +1,3 @@
+import {owner,loadJournal,saveJournal} from '@/lib/journal/store';import {checkBrowserOrigin,privateResponse,errorResponse,JournalError} from '@/lib/journal/auth';
+export async function GET(request:Request){try{return privateResponse(await loadJournal(owner(request.headers)));}catch(error){return errorResponse(error);}}
+export async function PUT(request:Request){try{checkBrowserOrigin(request);const ownerId=owner(request.headers);const body=await request.text();if(body.length>1000000)throw new JournalError(413,'记录过大，请分批整理。');const raw=JSON.parse(body);return privateResponse(await saveJournal(ownerId,raw.state,raw.revision));}catch(error){return errorResponse(error);}}

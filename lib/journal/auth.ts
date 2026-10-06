@@ -1,0 +1,5 @@
+export class JournalError extends Error{status:number;constructor(status:number,message:string){super(message);this.status=status;}}
+export function ownerIdentity(headers:Headers,expectedEmail:string|undefined){const id=headers.get('oai-authenticated-user-id'),email=headers.get('oai-authenticated-user-email');if(!id||!email)throw new JournalError(401,'请使用 ChatGPT 登录私人网站。');if(!expectedEmail||email.toLowerCase()!==expectedEmail.toLowerCase())throw new JournalError(403,'仅日记所有者可以访问。');return id;}
+export function checkBrowserOrigin(request:Request){const origin=request.headers.get('origin');if(origin&&origin!==new URL(request.url).origin)throw new JournalError(403,'请从私人网站内保存记录。');}
+export function privateResponse(data:unknown,status=200){return Response.json(data,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow','Referrer-Policy':'no-referrer'}});}
+export function errorResponse(error:unknown){return privateResponse({error:error instanceof JournalError?error.message:'暂时无法保存或读取。请稍后重试。'},error instanceof JournalError?error.status:503);}

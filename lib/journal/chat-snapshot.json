@@ -1,0 +1,11 @@
+{
+  "batchId": "initial-empty",
+  "payload": {
+    "version": 1,
+    "timezone": "Asia/Shanghai",
+    "meals": [],
+    "weights": [],
+    "completeness": {}
+  },
+  "photos": []
+}
